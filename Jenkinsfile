@@ -1,18 +1,23 @@
-pipeline{
-    agent any{
-        stage('Build Frontend'){
-            steps{
-                dir('frontend'){
+pipeline {
+    agent any
+
+    stages {
+
+        // ===== FRONTEND BUILD =====
+        stage('Build Frontend') {
+            steps {
+                dir('frontend') {
                     bat 'npm install'
                     bat 'npm run build'
                 }
             }
         }
 
-        stage('Deploy Frontend'){
-            steps{
+        // ===== FRONTEND DEPLOY =====
+        stage('Deploy Frontend') {
+            steps {
                 bat '''
-                if exist "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\react"(
+                if exist "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\react" (
                     rmdir /S /Q "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\react"
                 )
                 mkdir "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\react"
@@ -21,15 +26,17 @@ pipeline{
             }
         }
 
-        stage('Build backend'){
-            steps{
-                dir('zyrabackend'){
+        // ===== BACKEND BUILD =====
+        stage('Build Backend') {
+            steps {
+                dir('zyrabackend') {
                     bat 'mvn clean package'
                 }
             }
         }
 
-        stage('deploy backend'){
+        // ===== BACKEND DEPLOY =====
+        stage('Deploy Backend') {
             steps {
                 bat '''
                 if exist "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\springboot.war" (
@@ -42,13 +49,14 @@ pipeline{
                 '''
             }
         }
+
     }
 
-    post{
-        success{
+    post {
+        success {
             echo 'Deployment Successful!'
         }
-        failure{
+        failure {
             echo 'Deployment Failed!'
         }
     }

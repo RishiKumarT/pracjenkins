@@ -29,7 +29,7 @@ pipeline {
         // ===== BACKEND BUILD =====
         stage('Build Backend') {
             steps {
-                dir('zyrabackend') {
+                dir('zyrabackend/demo') {
                     bat 'mvn clean package'
                 }
             }
